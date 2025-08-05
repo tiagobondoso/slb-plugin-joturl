@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<plugin id="outsystems-plugin-joturl" version="1.0.0"
+    xmlns="http://apache.org/cordova/ns/plugins/1.0"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+    <name>CDVJotURL</name>
+    <js-module name="CDVJotURL" src="www/CDVJotURL.js">
+        <clobbers target="cordova.plugins.JotUrlPlugin" />
+    </js-module>
+
+    <!-- allow passing domain & scheme via config.xml preferences -->
+    <preference name="JOTURL_ASSOCIATED_DOMAIN" />
+    <!--<preference name="JOTURL_CUSTOM_SCHEME" /> -->
+    
+    <platform name="ios">
+        <!-- Hooks -->
+        <hook type="after_plugin_add" src="hooks/add_swift_support.js" />
+        <hook type="after_prepare" src="hooks/update_bridging_header.js" />
+
+        <!-- Associated Domain (Universal Links) -->
+        <edit-config
+            file="**/Entitlements-*.plist"
+            mode="merge"
+            target="com.apple.developer.associated-domains">
+            <array>
+                <string>applinks:$JOTURL_ASSOCIATED_DOMAIN</string>
+            </array>
+        </edit-config>
+
+        <!-- Custom Scheme -->
+        <!--
+        <config-file target="*-Info.plist" parent="CFBundleURLTypes">
+            <array>
+            <dict>
+                <key>CFBundleURLSchemes</key>
+                <array>
+                <string>$JOTURL_CUSTOM_SCHEME</string>
+                </array>
+            </dict>
+            </array>
+        </config-file> 
+        -->
+
+        <config-file parent="/*" target="config.xml">
+            <feature name="JotUrlPlugin">
+                <param name="ios-package" value="JotUrlPlugin" />
+            </feature>
+        </config-file>
+        <source-file src="src/ios/CDVJotURL.swift" />
+        <source-file src="src/ios/AppDelegate+JotURL.m" />
+    </platform>
+    <platform name="android">
+        <!-- Hook -->
+        <hook type="before_plugin_install" src="hooks/android_replace_domain.js" />
+        <!-- Register the plugin -->
+        <config-file target="res/xml/config.xml" parent="/*">
+            <feature name="JotUrlPlugin">
+                <param name="android-package" value="com.outsystems.plugins.joturl.JotUrlPlugin" />
+            </feature>
+        </config-file>
+
+        <!-- Merge two intent-filters into your main activity -->
+        <config-file target="AndroidManifest.xml" parent="/manifest/application/activity">
+            <!-- Universal Link (App Link) -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="https"
+                      android:host="$JOTURL_ASSOCIATED_DOMAIN" />
+            </intent-filter>
+    
+            <!-- Custom URL Scheme (fallback) -->
+            <!-- 
+            <intent-filter>
+                <action android:name="android.intent.action.VIEW" />
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <data android:scheme="$JOTURL_CUSTOM_SCHEME" />
+            </intent-filter>
+            -->
+        </config-file>
+            
+        <!-- Java source -->
+        <source-file src="src/android/JotUrlPlugin.java" target-dir="src/com/outsystems/plugins/joturl" />
+    </platform>
+</plugin>

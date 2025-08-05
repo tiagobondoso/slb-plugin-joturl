@@ -1,0 +1,17 @@
+{
+  "name": "outsystems-plugin-joturl",
+  "version": "1.0.0",
+  "description": "",
+  "cordova": {
+    "id": "outsystems-plugin-joturl",
+    "platforms": [
+      "ios"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-ios"
+  ],
+  "author": "André Grillo - OutSystems",
+  "license": "MIT"
+}
