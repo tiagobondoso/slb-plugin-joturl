@@ -18,16 +18,7 @@
 
         <!-- Associated Domain (Universal Links) -->
         <edit-config
-            file="**/Entitlements-Debug.plist"
-            mode="merge"
-            target="com.apple.developer.associated-domains">
-            <array>
-                <string>applinks:$JOTURL_ASSOCIATED_DOMAIN</string>
-            </array>
-        </edit-config>
-
-        <edit-config
-            file="**/Entitlements-Release.plist"
+            file="**/Entitlements-*.plist"
             mode="merge"
             target="com.apple.developer.associated-domains">
             <array>
